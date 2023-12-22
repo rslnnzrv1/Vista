@@ -1,0 +1,55 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Account List{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="chat-container">
+        <div class="chat-header">
+          <h1>Участники чата:</h1>
+          <div class="d-flex align-items-center">
+            {% for participant in chat.participants.all %}
+              {% if participant != request.user %}
+                <div class="participant">
+                  <img src="{{ participant.avatar.url }}" alt="Avatar" class="rounded-circle avatar-small">
+                  <p>{{ participant.username }}</p>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          {% for message in chat.messages.all %}
+            <div class="message {% if message.sender == request.user %}my-message{% else %}other-message{% endif %}">
+              {% if message.sender != request.user %}
+                <div class="message-avatar">
+                  <img src="{{ message.sender.avatar.url }}" alt="Avatar" class="rounded-circle avatar-small">
+                </div>
+              {% endif %}
+              <div class="message-content">
+                <div class="message-text">{{ message.content }}</div>
+                <div class="message-timestamp text-muted">{{ message.timestamp }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="chat-input">
+        <form method="post" action="{% url 'send_message' chat_id=chat.id %}" id="message-form">
+          {% csrf_token %}
+          <div class="input-group">
+            <textarea class="form-control" name="content" id="message-input" placeholder="Введите сообщение"></textarea>
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-primary">Отправить</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

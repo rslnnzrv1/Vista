@@ -1,0 +1,76 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="profile">
+            {% if author.avatar %}
+              <img src="{{ author.avatar.url }}" alt="Avatar" class="img-fluid rounded-circle mb-4" style="width: 250px; height: 250px;">
+            {% else %}
+              <img src="/media/avatars/default.jpg" alt="Avatar" class="img-fluid rounded-circle mb-4" style="width: 150px; height: 150px;">
+            {% endif %}
+          <div class="profile-info">
+            <h1 class="profile-username">{{ author.username }}</h1>
+            <p class="profile-name">{{ author.name }}</p>
+            <p>Подписчики: <a href="{% url 'account_list' username=author.username type='subscribers' %}">{{ subscribers_count }}</a></p>
+            <p>Подписки: <a href="{% url 'account_list' username=author.username type='subscriptions' %}">{{ subscriptions_count }}</a></p>
+            {% if not is_owner %}
+              {% if is_subscribed %}
+                <form method="post" action="{% url 'unsubscribe_view' author_id=author.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Отписаться</button>
+                </form>
+              {% else %}
+                <form method="post" action="{% url 'subscribe_view' account_id=author.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-primary">Подписаться</button>
+                </form>
+              {% endif %}
+            {% endif %}
+            {% if not is_owner %}
+              <a href="{% url 'create_chat' username=author.username %}" class="btn btn-success">Написать сообщение</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="posts">
+          {% for content in user_content %}
+            {% if content.file %}
+          <h2 class="mt-4">Содержимое пользователя:</h2>
+              <div class="post post-item">
+                <div class="post-media">
+                  <a href="{% url 'content_detail' content_id=content.id %}">
+                    {% if content.get_file_extension == 'mp4' %}
+                      <video class="post-media-item" controls>
+                        <source src="{{ content.file.url }}" type="video/mp4">
+                        Ваш браузер не поддерживает тег video.
+                      </video>
+                    {% else %}
+                      <img src="{{ content.file.url }}" alt="content" class="post-media-item">
+                    {% endif %}
+                  </a>
+                </div>
+                <div class="post-details">
+                  <h5 class="post-title">{{ content.title }}</h5>
+                  <p class="post-description">{{ content.description }}</p>
+                  <p class="post-created-at">Created at: {{ content.created_at }}</p>
+                  <a href="{% url 'like_content' content_id=content.id %}" class="btn btn-primary">Like</a>
+                  {% if is_owner %}
+                    <a href="{% url 'update_content' content.id %}" class="btn btn-secondary">Update</a>
+                    <a href="{% url 'delete_content' content.id %}" class="btn btn-danger">Delete</a>
+                  {% endif %}
+                </div>
+              </div>
+            {% else %}
+              <p>No content available</p>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

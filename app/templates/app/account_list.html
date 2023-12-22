@@ -1,0 +1,30 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Account List{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h2>List of users:</h2>
+    <ul class="list-group">
+      {% for account in accounts %}
+        {% if type == 'subscriptions' %}
+          <li class="list-group-item">
+            <div class="d-flex align-items-center">
+              <img src="{{ account.account.avatar.url }}" alt="Avatar" class="avatar mr-2 mr-3 rounded-circle" width="50" height="50">
+              <a class="text-decoration-none" href="{% url 'profile_view' username=account.account.username %}">{{ account.account.username }}</a>
+            </div>
+          </li>
+        {% elif type == 'subscribers' %}
+          <li class="list-group-item">
+            <div class="d-flex align-items-center">
+              <img src="{{ account.subscriber.avatar.url }}" alt="Avatar" class="avatar mr-2 mr-3 rounded-circle" width="50" height="50">
+              <a class="text-decoration-none" href="{% url 'profile_view' username=account.subscriber.username %}">{{ account.subscriber.username }}</a>
+            </div>
+          </li>
+        {% endif %}
+      {% empty %}
+        <li class="list-group-item">No accounts to display.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

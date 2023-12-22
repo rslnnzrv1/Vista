@@ -1,0 +1,27 @@
+{% extends 'app/base.html' %}
+{% block title %}Account List{% endblock %}
+
+{% block content %}
+  <h1 class="display-4">Список чатов</h1>
+  <div class="card-deck">
+    {% for chat in chats %}
+      <div class="card">
+
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href="{% url 'chat_detail' chat.pk %}" class="text-decoration-none">
+              {% for participant in chat.participants.all %}
+                {% if participant != request.user %}
+                  <img src="{{ participant.avatar.url }}" class="rounded-circle avatar-small" alt="Chat Avatar">
+                  {{ participant.username }}{% if not forloop.last %} {% endif %}
+                {% endif %}
+              {% endfor %}
+            </a>
+          </h5>
+        </div>
+      </div>
+    {% empty %}
+      <p>No chats available.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="mt-4">Уведомления</h1>
+    {% if notifications %}
+      <ul class="list-group mt-4">
+        {% for notification in notifications %}
+          <li class="list-group-item">
+            <a href="{% url 'profile_view' username=notification.sender.username %}">{{ notification.message }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="mt-4">Нет новых уведомлений.</p>
+    {% endif %}
+  </div>
+{% endblock %}

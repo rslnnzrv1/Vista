@@ -1,0 +1,39 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Explore{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Post List</h1>
+  {% for post in posts %}
+    <div class="post card mb-4">
+    {% if post.file %}
+      <div class="card-header d-flex align-items-center">
+        <img src="{{ post.author.avatar.url }}" alt="{{ post.author.username }}" class="avatar mr-2 mr-3 rounded-circle" width="50" height="50">
+        <h2><a href="{% url 'profile_view' username=post.author.username %}">{{ post.author.username }}</a></h2>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.description }}</p>
+        {% if post.get_file_extension == 'mp4' %}
+          <a href="{% url 'content_detail' content_id=post.id %}">
+            <video class="card-img-top" controls width="440" height="480">
+              <source src="{{ post.file.url }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </a>
+        {% else %}
+          <a href="{% url 'content_detail' content_id=post.id %}">
+            <img src="{{ post.file.url }}" alt="content" class="card-img-top" width="340" height="480">
+          </a>
+        {% endif %}
+        <a href="{% url 'like_content' content_id=post.id %}" class="btn btn-primary">Like</a>
+        <p class="card-text">Created at: {{ post.created_at }}</p>
+      </div>
+    {% else %}
+      <div class="card-body">
+        <p class="card-text">No post available</p>
+      </div>
+    {% endif %}
+    </div>
+  {% endfor %}
+{% endblock %}

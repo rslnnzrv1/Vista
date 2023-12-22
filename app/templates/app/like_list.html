@@ -1,0 +1,21 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Liked Users{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h2>List of liked users:</h2>
+    {% if liked_users %}
+      <ul class="list-group">
+        {% for liked_user in liked_users %}
+          <li class="list-group-item">
+            <img src="{{ liked_user.user.avatar.url }}" alt="{{ liked_user.user }}" class="avatar mr-2 mr-3 rounded-circle" width="50" height="50">
+            <a href="{% url 'profile_view' username=liked_user.user %}">{{ liked_user.user }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No users have liked this content.</p>
+    {% endif %}
+  </div>
+{% endblock %}
